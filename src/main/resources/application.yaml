@@ -1,6 +1,16 @@
 spring:
   application:
     name: ros2cal-api
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASS}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  flyway:
+    enabled: true
 server:
   port: ${PORT:8080}
 management:
