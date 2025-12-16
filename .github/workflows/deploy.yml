@@ -111,7 +111,7 @@ jobs:
           region: "${{ env.GCP_REGION }}"
           image: "${{ env.IMAGE_URI }}"
           env_vars: "${{ env.CLOUD_RUN_ENV_VARS }}"
-          secret_env: "${{ env.CLOUD_RUN_SECRET_BINDINGS }}"
+          secrets: "${{ env.CLOUD_RUN_SECRET_BINDINGS }}"
           # For a lab: make it public (you can remove later)
           flags: >-
             --allow-unauthenticated
