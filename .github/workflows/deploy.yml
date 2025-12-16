@@ -14,7 +14,6 @@ env:
   GCP_REGION: "europe-west3"
   CLOUD_RUN_SERVICE: "ros2cal"
   SKIP_TESTS: "true"
-  ENVIRONMENT: "prod" # GitHub Environment name to read vars/secrets from (not referenced in 'environment' key)
 
   # Artifact Registry repository name (Docker repo you created in Artifact Registry)
   ARTIFACT_REPO: "lab"
