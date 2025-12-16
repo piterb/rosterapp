@@ -41,3 +41,7 @@ out/
 
 # Logs
 *.log
+
+# Local
+.env
+application-local.yaml
