@@ -49,3 +49,11 @@ tasks.named('test') {
 		enabled = false
 	}
 }
+
+tasks.withType(Test).configureEach {
+    testLogging {
+        events "failed"
+        showStandardStreams = true
+        exceptionFormat = 'full'
+    }
+}

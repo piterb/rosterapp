@@ -19,6 +19,6 @@ class RosterControllerTest {
     void convertRosterReturnsSampleString() throws Exception {
         mockMvc.perform(get("/roster/convert"))
                 .andExpect(status().isOk())
-                .andExpect(content().string("Sample roster conversion"));
+                .andExpect(content().string("Sample roster conversion2"));
     }
 }

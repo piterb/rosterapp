@@ -13,7 +13,7 @@ env:
   GCP_PROJECT_ID: "ros2cal-481314"
   GCP_REGION: "europe-west3"
   CLOUD_RUN_SERVICE: "ros2cal"
-  SKIP_TESTS: "true"
+  SKIP_TESTS: "false"
 
   # Artifact Registry repository name (Docker repo you created in Artifact Registry)
   ARTIFACT_REPO: "lab"
