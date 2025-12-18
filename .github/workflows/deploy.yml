@@ -29,7 +29,7 @@ env:
     SPRING_DATASOURCE_URL=${{ vars.SPRING_DATASOURCE_URL }}
 
   # Secret names in Secret Manager (names only, not values)
-  SPRING_DATASOURCE_PASSWORD: ${{ vars.SPRING_DATASOURCE_PASSWORD }}
+  SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
 
 jobs:
   deploy:
@@ -51,6 +51,9 @@ jobs:
           fi
           if [ -z "${GCP_DEPLOY_SA_EMAIL}" ]; then
             missing+=("GCP_DEPLOY_SA_EMAIL")
+          fi
+          if [ -z "${SPRING_DATASOURCE_PASSWORD}" ]; then
+            missing+=("SPRING_DATASOURCE_PASSWORD (Secret Manager secret name)")
           fi
           if [ ${#missing[@]} -ne 0 ]; then
             echo "Missing required GitHub Environment variables: ${missing[*]}" >&2
