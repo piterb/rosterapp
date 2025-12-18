@@ -38,6 +38,12 @@ resource "google_service_account_iam_member" "runtime_act_as" {
   member             = "serviceAccount:${local.tf_admin_sa_email}"
 }
 
+resource "google_service_account_iam_member" "runtime_self_act_as" {
+  service_account_id = google_service_account.runtime.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = "serviceAccount:${google_service_account.runtime.email}"
+}
+
 resource "google_service_account_iam_member" "runtime_wif_user" {
   service_account_id = google_service_account.runtime.name
   role               = "roles/iam.workloadIdentityUser"
