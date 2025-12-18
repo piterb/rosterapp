@@ -54,5 +54,5 @@ variable "cloud_run_max_instances" {
 variable "cloud_run_image" {
   description = "Container image URI for Cloud Run"
   type        = string
-  default     = "REPLACE_WITH_IMAGE_URI"
+  default     = "gcr.io/cloudrun/hello"
 }
