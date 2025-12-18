@@ -111,7 +111,7 @@ jobs:
           set -euo pipefail
 
           PROJECT_NUMBER="$(gcloud projects describe "$GCP_PROJECT_ID" --format='value(projectNumber)')"
-          
+
           rendered=""
           while IFS= read -r line; do
             [ -z "$line" ] && continue
@@ -146,6 +146,8 @@ jobs:
           service: ${{ env.CLOUD_RUN_SERVICE }}
           region: ${{ env.GCP_REGION }}
           image: ${{ env.IMAGE_URI }}
+          member: "allUsers"
+          role: "roles/run.invoker"
           env_vars: ${{ env.CLOUD_RUN_ENV_VARS }}
           secrets: ${{ env.CLOUD_RUN_SECRETS_RENDERED }}
 
