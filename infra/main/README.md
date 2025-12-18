@@ -26,6 +26,9 @@ If you omit `artifact_repo_name` or `cloud_run_service_name`, they default to:
 - `<project_id>-service`
 
 If you omit `cloud_run_image`, the service is created with `gcr.io/cloudrun/hello` and the deploy workflow will replace it.
+
+Public access
+- `allow_unauthenticated` defaults to `true`, so Cloud Run gets `allUsers` with `roles/run.invoker`.
 ```
 
 ## GitHub Actions usage
