@@ -1,3 +1,3 @@
-/infra/ @REPLACE_WITH_GITHUB_USER_OR_TEAM
-/.github/CODEOWNERS @REPLACE_WITH_GITHUB_USER_OR_TEAM
-/.github/workflows/infra.yml @REPLACE_WITH_GITHUB_USER_OR_TEAM
+/infra/ @piterb
+/.github/CODEOWNERS @piterb
+/.github/workflows/infra.yml @piterb
