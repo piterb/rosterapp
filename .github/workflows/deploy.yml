@@ -6,6 +6,7 @@ on:
     paths-ignore:
       - "infra/**"
       - ".github/workflows/infra.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read
