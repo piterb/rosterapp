@@ -47,7 +47,7 @@ variable "wif_pool_id" {
 variable "allow_unauthenticated" {
   description = "Allow public access to the Cloud Run service"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "cloud_run_min_instances" {
