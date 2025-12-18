@@ -82,9 +82,9 @@ Required **Variables**:
 - `ARTIFACT_REPO`
 - `CLOUD_RUN_SERVICE`
 - `GCP_DEPLOY_SA_EMAIL`
-- `SPRING_DATASOURCE_USERNAME`
-- `SPRING_DATASOURCE_PASSWORD`
-- `SPRING_DATASOURCE_URL`
+- `SPRING_DATASOURCE_USERNAME` (plain env value)
+- `SPRING_DATASOURCE_PASSWORD` (Secret Manager secret name)
+- `SPRING_DATASOURCE_URL` (plain env value)
 - `SPRING_PROFILES_ACTIVE` (optional)
 
 Required **Secrets**:

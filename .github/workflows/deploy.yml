@@ -25,11 +25,11 @@ env:
   # Non-secret env vars for Cloud Run
   CLOUD_RUN_ENV_VARS: |
     SPRING_PROFILES_ACTIVE=${{ vars.SPRING_PROFILES_ACTIVE }}
+    SPRING_DATASOURCE_USERNAME=${{ vars.SPRING_DATASOURCE_USERNAME }}
+    SPRING_DATASOURCE_URL=${{ vars.SPRING_DATASOURCE_URL }}
 
   # Secret names in Secret Manager (names only, not values)
-  SPRING_DATASOURCE_USERNAME: ${{ vars.SPRING_DATASOURCE_USERNAME }}
   SPRING_DATASOURCE_PASSWORD: ${{ vars.SPRING_DATASOURCE_PASSWORD }}
-  SPRING_DATASOURCE_URL: ${{ vars.SPRING_DATASOURCE_URL }}
 
 jobs:
   deploy:
@@ -90,9 +90,7 @@ jobs:
           image: ${{ env.IMAGE_URI }}
           env_vars: ${{ env.CLOUD_RUN_ENV_VARS }}
           secrets: |
-            SPRING_DATASOURCE_USERNAME=${{ env.SPRING_DATASOURCE_USERNAME }}:latest
             SPRING_DATASOURCE_PASSWORD=${{ env.SPRING_DATASOURCE_PASSWORD }}:latest
-            SPRING_DATASOURCE_URL=${{ env.SPRING_DATASOURCE_URL }}:latest
 
       - name: Show service URL
         run: |
