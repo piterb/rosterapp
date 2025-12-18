@@ -56,6 +56,12 @@ resource "google_service_account_iam_member" "runtime_wif_token_creator" {
   member             = local.wif_principal_set
 }
 
+resource "google_service_account_iam_member" "runtime_wif_act_as" {
+  service_account_id = google_service_account.runtime.name
+  role               = "roles/iam.serviceAccountUser"
+  member             = local.wif_principal_set
+}
+
 resource "google_project_iam_member" "runtime_secret_access" {
   project = var.project_id
   role    = "roles/secretmanager.secretAccessor"
