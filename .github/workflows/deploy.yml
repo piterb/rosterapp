@@ -38,6 +38,24 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Validate required deploy vars
+        run: |
+          missing=()
+          if [ -z "${ARTIFACT_REPO}" ]; then
+            missing+=("ARTIFACT_REPO")
+          fi
+          if [ -z "${CLOUD_RUN_SERVICE}" ]; then
+            missing+=("CLOUD_RUN_SERVICE")
+          fi
+          if [ -z "${GCP_DEPLOY_SA_EMAIL}" ]; then
+            missing+=("GCP_DEPLOY_SA_EMAIL")
+          fi
+          if [ ${#missing[@]} -ne 0 ]; then
+            echo "Missing required GitHub Environment variables: ${missing[*]}" >&2
+            echo "Set them in the GitHub Environment before running deploy." >&2
+            exit 1
+          fi
+
       - name: Authenticate to Google Cloud (OIDC / WIF)
         uses: google-github-actions/auth@v2
         with:
