@@ -68,6 +68,12 @@ resource "google_project_iam_member" "runtime_secret_access" {
   member  = "serviceAccount:${google_service_account.runtime.email}"
 }
 
+resource "google_project_iam_member" "runtime_secret_admin" {
+  project = var.project_id
+  role    = "roles/secretmanager.admin"
+  member  = "serviceAccount:${google_service_account.runtime.email}"
+}
+
 resource "google_project_iam_member" "runtime_artifact_registry_writer" {
   project = var.project_id
   role    = "roles/artifactregistry.writer"
