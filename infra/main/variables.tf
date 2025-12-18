@@ -33,6 +33,17 @@ variable "tf_admin_service_account_id" {
   default     = "tf-admin"
 }
 
+variable "github_repo" {
+  description = "GitHub repo in ORG/REPO format (used for WIF bindings)"
+  type        = string
+}
+
+variable "wif_pool_id" {
+  description = "Workload Identity Pool ID"
+  type        = string
+  default     = "github-pool"
+}
+
 variable "allow_unauthenticated" {
   description = "Allow public access to the Cloud Run service"
   type        = bool

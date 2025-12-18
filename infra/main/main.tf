@@ -1,3 +1,7 @@
+data "google_project" "current" {
+  project_id = var.project_id
+}
+
 locals {
   required_apis = [
     "run.googleapis.com",
@@ -11,6 +15,7 @@ locals {
   artifact_repo_name     = coalesce(var.artifact_repo_name, "${var.project_id}-artifact")
   cloud_run_service_name = coalesce(var.cloud_run_service_name, "${var.project_id}-service")
   tf_admin_sa_email      = "${var.tf_admin_service_account_id}@${var.project_id}.iam.gserviceaccount.com"
+  wif_principal_set      = "principalSet://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${var.wif_pool_id}/attribute.repository/${var.github_repo}"
 }
 
 resource "google_project_service" "required" {
@@ -33,9 +38,33 @@ resource "google_service_account_iam_member" "runtime_act_as" {
   member             = "serviceAccount:${local.tf_admin_sa_email}"
 }
 
+resource "google_service_account_iam_member" "runtime_wif_user" {
+  service_account_id = google_service_account.runtime.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = local.wif_principal_set
+}
+
+resource "google_service_account_iam_member" "runtime_wif_token_creator" {
+  service_account_id = google_service_account.runtime.name
+  role               = "roles/iam.serviceAccountTokenCreator"
+  member             = local.wif_principal_set
+}
+
 resource "google_project_iam_member" "runtime_secret_access" {
   project = var.project_id
   role    = "roles/secretmanager.secretAccessor"
+  member  = "serviceAccount:${google_service_account.runtime.email}"
+}
+
+resource "google_project_iam_member" "runtime_artifact_registry_writer" {
+  project = var.project_id
+  role    = "roles/artifactregistry.writer"
+  member  = "serviceAccount:${google_service_account.runtime.email}"
+}
+
+resource "google_project_iam_member" "runtime_run_admin" {
+  project = var.project_id
+  role    = "roles/run.admin"
   member  = "serviceAccount:${google_service_account.runtime.email}"
 }
 

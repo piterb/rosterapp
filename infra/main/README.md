@@ -16,6 +16,7 @@ terraform init -backend-config="bucket=REPLACE_WITH_TF_STATE_BUCKET" -backend-co
 terraform plan \
   -var "project_id=REPLACE_WITH_PROJECT_ID" \
   -var "region=REPLACE_WITH_REGION" \
+  -var "github_repo=ORG/REPO" \
   -var "artifact_repo_name=REPLACE_WITH_ARTIFACT_REPO" \
   -var "cloud_run_service_name=REPLACE_WITH_SERVICE_NAME" \
   -var "cloud_run_image=REPLACE_WITH_IMAGE_URI"
