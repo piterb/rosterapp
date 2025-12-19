@@ -151,6 +151,7 @@ Required **Secrets**:
 - 401 with issuer mismatch: ensure `AUTH_ISSUER_URIS` includes the issuer of your token.
 - Audience mismatch: ID token must target your client/project; use the same client ID configured in Identity Platform.
 - Opaque access token: use the ID token (JWT) from the Authorization Code + PKCE flow.
+- Terraform apply 403 on Identity Platform/API Keys: ensure the Terraform admin SA has `roles/identitytoolkit.admin` and `roles/apikeys.admin` (these are granted in main Terraform).
 
 ### Test strategy
 - CI uses `spring-security-test` with mock JWTs; no real Google tokens are required for tests.

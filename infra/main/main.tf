@@ -28,14 +28,14 @@ resource "google_project_service" "required" {
   disable_on_destroy = false
 }
 
-resource "google_identity_platform_project_default_config" "default" {
+resource "google_identity_platform_config" "default" {
   provider = google-beta
   project  = var.project_id
 
   sign_in {
     email {
-      enabled            = true
-      password_required  = true
+      enabled           = true
+      password_required = true
     }
   }
 
@@ -124,6 +124,19 @@ resource "google_project_iam_member" "runtime_run_admin" {
   project = var.project_id
   role    = "roles/run.admin"
   member  = "serviceAccount:${google_service_account.runtime.email}"
+}
+
+# Grant the Terraform admin SA permissions to manage Identity Platform and API Keys.
+resource "google_project_iam_member" "tf_admin_identity_platform" {
+  project = var.project_id
+  role    = "roles/identitytoolkit.admin"
+  member  = "serviceAccount:${local.tf_admin_sa_email}"
+}
+
+resource "google_project_iam_member" "tf_admin_apikey_admin" {
+  project = var.project_id
+  role    = "roles/apikeys.admin"
+  member  = "serviceAccount:${local.tf_admin_sa_email}"
 }
 
 resource "google_artifact_registry_repository" "docker" {
