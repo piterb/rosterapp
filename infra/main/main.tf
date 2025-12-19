@@ -135,7 +135,7 @@ resource "google_project_iam_member" "tf_admin_identity_platform" {
 
 resource "google_project_iam_member" "tf_admin_apikey_admin" {
   project = var.project_id
-  role    = "roles/apikeys.admin"
+  role    = "roles/serviceusage.apiKeysAdmin"
   member  = "serviceAccount:${local.tf_admin_sa_email}"
 }
 
