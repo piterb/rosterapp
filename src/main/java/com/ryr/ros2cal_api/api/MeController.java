@@ -21,7 +21,7 @@ public class MeController {
     @GetMapping("/me")
     public ResponseEntity<Map<String, Object>> me(@AuthenticationPrincipal Jwt jwt) {
         String sub = jwt.getSubject();
-        String email = jwt.containsClaim("email") ? jwt.getClaimAsString("email") : null;
+        String email = jwt.getClaims().containsKey("email") ? jwt.getClaimAsString("email") : null;
 
         if (log.isDebugEnabled()) {
             log.debug("authenticated request: sub={}, email={}", sub, email);
