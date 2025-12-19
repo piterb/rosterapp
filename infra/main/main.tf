@@ -39,7 +39,12 @@ resource "google_identity_platform_config" "default" {
     }
   }
 
-  depends_on = [google_project_service.required]
+  depends_on = [
+    google_project_service.required,
+    google_project_iam_member.tf_admin_identity_platform,
+    google_project_iam_member.tf_admin_identity_platform_admin,
+    google_project_iam_member.tf_admin_service_usage_admin,
+  ]
 }
 
 resource "google_identity_platform_default_supported_idp_config" "google" {
@@ -49,7 +54,13 @@ resource "google_identity_platform_default_supported_idp_config" "google" {
   client_secret = var.identity_google_client_secret
   enabled       = true
 
-  depends_on = [google_project_service.required]
+  depends_on = [
+    google_project_service.required,
+    google_identity_platform_config.default,
+    google_project_iam_member.tf_admin_identity_platform,
+    google_project_iam_member.tf_admin_identity_platform_admin,
+    google_project_iam_member.tf_admin_service_usage_admin,
+  ]
 }
 
 resource "google_apikeys_key" "identity_platform" {
