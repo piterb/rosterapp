@@ -139,6 +139,18 @@ resource "google_project_iam_member" "tf_admin_apikey_admin" {
   member  = "serviceAccount:${local.tf_admin_sa_email}"
 }
 
+resource "google_project_iam_member" "tf_admin_identity_platform_admin" {
+  project = var.project_id
+  role    = "roles/identityplatform.admin"
+  member  = "serviceAccount:${local.tf_admin_sa_email}"
+}
+
+resource "google_project_iam_member" "tf_admin_service_usage_admin" {
+  project = var.project_id
+  role    = "roles/serviceusage.serviceUsageAdmin"
+  member  = "serviceAccount:${local.tf_admin_sa_email}"
+}
+
 resource "google_artifact_registry_repository" "docker" {
   project       = var.project_id
   location      = var.region
