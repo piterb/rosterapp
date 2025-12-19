@@ -32,7 +32,6 @@ Public access
 
 Identity Platform (auth)
 - Requires `identity_google_client_id` and `identity_google_client_secret` (Google IdP).
-- Optional `identity_authorized_domains` (comma-separated) overrides the default domains used for Identity Platform.
 ```
 
 ## GitHub Actions usage

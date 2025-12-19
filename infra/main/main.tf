@@ -18,14 +18,6 @@ locals {
   cloud_run_service_name = coalesce(var.cloud_run_service_name, "${var.project_id}-service")
   tf_admin_sa_email      = "${var.tf_admin_service_account_id}@${var.project_id}.iam.gserviceaccount.com"
   wif_principal_set      = "principalSet://iam.googleapis.com/projects/${data.google_project.current.number}/locations/global/workloadIdentityPools/${var.wif_pool_id}/attribute.repository/${var.github_repo}"
-  identity_authorized_domains = (
-    var.identity_authorized_domains != null && length(var.identity_authorized_domains) > 0
-  ) ? var.identity_authorized_domains : [
-    "localhost",
-    "oauth.pstmn.io",
-    "${var.project_id}.cloud.goog",
-    "run.app"
-  ]
 }
 
 resource "google_project_service" "required" {
@@ -46,8 +38,6 @@ resource "google_identity_platform_project_default_config" "default" {
       password_required  = true
     }
   }
-
-  authorized_domains = local.identity_authorized_domains
 
   depends_on = [google_project_service.required]
 }

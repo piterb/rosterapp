@@ -88,7 +88,6 @@ Required **Variables**:
 - `SPRING_PROFILES_ACTIVE` (optional)
 - `AUTH_ISSUER_URIS` (comma-separated issuers, e.g., `https://securetoken.google.com/<project_id>,https://accounts.google.com`)
 - `IDENTITY_GOOGLE_CLIENT_ID` (OAuth client ID for Google IdP)
-- `IDENTITY_AUTHORIZED_DOMAINS` (optional; comma-separated domains for Identity Platform auth)
 
 Required **Secrets**:
 - `SPRING_DATASOURCE_PASSWORD` (DB password; synced into Secret Manager at deploy)
@@ -107,7 +106,6 @@ Required **Secrets**:
 
 ## Authentication (Google Identity Platform)
 - Terraform (main) now enables Identity Platform, turns on Email/Password sign-in, and wires Google IdP (client ID/secret from GitHub vars/secrets).
-- Allowed domains default to `localhost`, `oauth.pstmn.io`, `<project_id>.cloud.goog`, `run.app`; override with `IDENTITY_AUTHORIZED_DOMAINS`.
 - Terraform outputs `IDENTITY_PLATFORM_ISSUER` (e.g., `https://securetoken.google.com/<project_id>`) and `IDENTITY_PLATFORM_API_KEY` (sensitive) for Identity Toolkit REST flows.
 - App expects `AUTH_ISSUER_URIS` (set in GitHub vars) and will read comma-separated issuers. Recommended: `https://securetoken.google.com/<project_id>,https://accounts.google.com`.
 
@@ -131,7 +129,7 @@ Required **Secrets**:
    - User support email
    - Developer contact email
    - (Optional) App domain/homepage/privacy/terms – can stay empty for Testing.
-4) Authorized domains: add domains from `IDENTITY_AUTHORIZED_DOMAINS` (e.g., `localhost`, `oauth.pstmn.io`, `<project_id>.cloud.goog`, `run.app`, or your custom).
+4) Authorized domains: add the domains you will use (e.g., `localhost`, `oauth.pstmn.io`, `<project_id>.cloud.goog`, `run.app`, or your custom).
 5) Save & Continue; scopes can stay default (openid/profile/email).
 6) Test users: add accounts if you keep the app in **Testing**; for **Production** publish it and expect Google review if you add custom domains.
 
