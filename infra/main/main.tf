@@ -183,6 +183,22 @@ resource "google_artifact_registry_repository" "docker" {
   description   = "Docker repository"
   format        = "DOCKER"
 
+  cleanup_policies {
+    id     = "keep-latest-two"
+    action = "KEEP"
+    most_recent_versions {
+      keep_count = 2
+    }
+  }
+
+  cleanup_policies {
+    id     = "delete-older-than-1h"
+    action = "DELETE"
+    condition {
+      older_than = "3600s"
+    }
+  }
+
   depends_on = [google_project_service.required]
 }
 
