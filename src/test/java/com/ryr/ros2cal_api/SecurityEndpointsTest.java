@@ -26,10 +26,10 @@ class SecurityEndpointsTest {
 
     @Test
     void meReturnsClaimsWhenAuthenticated() throws Exception {
-        mockMvc.perform(get("/api/me").with(jwt(jwt -> {
+        mockMvc.perform(get("/api/me").with(jwt().jwt(jwt -> {
             jwt.subject("user-1");
             jwt.claim("email", "user@example.com");
-            jwt.claim("iss", "https://issuer.example.com");
+            jwt.issuer("https://issuer.example.com");
         })))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.sub").value("user-1"))

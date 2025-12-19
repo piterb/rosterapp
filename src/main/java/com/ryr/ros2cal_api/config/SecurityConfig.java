@@ -14,7 +14,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtIssuerAuthenticationManagerResolver;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -33,13 +32,13 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers(new AntPathRequestMatcher("/actuator/health"), new AntPathRequestMatcher("/actuator/info"))
+                        .requestMatchers("/actuator/health", "/actuator/info")
                         .permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/api/**"))
+                        .requestMatchers("/api/**")
                         .authenticated()
                         .anyRequest()
                         .denyAll())
-                .csrf(csrf -> csrf.ignoringRequestMatchers(new AntPathRequestMatcher("/api/**")))
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**"))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .authenticationManagerResolver(resolver)

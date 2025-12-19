@@ -26,7 +26,7 @@ class RosterControllerTest {
 
     @Test
     void convertRosterReturnsSampleStringWhenAuthenticated() throws Exception {
-        mockMvc.perform(get("/api/roster/convert").with(jwt(jwt -> jwt.subject("user-123"))))
+        mockMvc.perform(get("/api/roster/convert").with(jwt().jwt(jwt -> jwt.subject("user-123"))))
                 .andExpect(status().isOk())
                 .andExpect(content().string("Sample roster conversion"));
     }
