@@ -1,6 +1,7 @@
 package com.ryr.ros2cal_api.api;
 
 import java.time.Instant;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -27,13 +28,16 @@ public class MeController {
             log.debug("authenticated request: sub={}, email={}", sub, email);
         }
 
-        Map<String, Object> body = Map.of(
-                "sub", sub,
-                "email", email,
-                "iss", jwt.getIssuer().toString(),
-                "aud", jwt.getAudience(),
-                "exp", jwt.getExpiresAt() != null ? jwt.getExpiresAt().toEpochMilli() : null,
-                "principal_type", "jwt");
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("sub", sub);
+        body.put("email", email);
+        body.put("iss", jwt.getIssuer().toString());
+        body.put("aud", jwt.getAudience());
+        Instant expiresAt = jwt.getExpiresAt();
+        if (expiresAt != null) {
+            body.put("exp", expiresAt.toEpochMilli());
+        }
+        body.put("principal_type", "jwt");
         return ResponseEntity.ok(body);
     }
 }
