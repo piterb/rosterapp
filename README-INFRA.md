@@ -157,6 +157,7 @@ Required **Secrets**:
 
 ### Test strategy
 - CI uses `spring-security-test` with mock JWTs; no real Google tokens are required for tests.
+- Tests run against a transient PostgreSQL container via Testcontainers (Docker required in CI/local).
 - `/actuator/health` stays public; `/api/**` requires a Bearer JWT.
 
 ### Option B: Auth0
