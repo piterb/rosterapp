@@ -104,8 +104,10 @@ Required **Secrets**:
 - `infra/main` uses remote state in GCS.
 - The deploy workflow uses Secret Manager secret names, not values.
 
-## Authentication (Google Identity Platform)
-- Terraform (main) now enables Identity Platform, turns on Email/Password sign-in, and wires Google IdP (client ID/secret from GitHub vars/secrets).
+## Authentication (choose one)
+
+### Option A: Google Identity Platform
+- Terraform (main) enables Identity Platform, turns on Email/Password sign-in, and wires Google IdP (client ID/secret from GitHub vars/secrets).
 - Terraform outputs `IDENTITY_PLATFORM_ISSUER` (e.g., `https://securetoken.google.com/<project_id>`) and `IDENTITY_PLATFORM_API_KEY` (sensitive) for Identity Toolkit REST flows.
 - App expects `AUTH_ISSUER_URIS` (set in GitHub vars) and will read comma-separated issuers. Recommended: `https://securetoken.google.com/<project_id>,https://accounts.google.com`.
 
@@ -156,3 +158,30 @@ Required **Secrets**:
 ### Test strategy
 - CI uses `spring-security-test` with mock JWTs; no real Google tokens are required for tests.
 - `/actuator/health` stays public; `/api/**` requires a Bearer JWT.
+
+### Option B: Auth0
+- App expects `AUTH_ISSUER_URIS` and will read comma-separated issuers. For Auth0 use your tenant (or custom) issuer, e.g. `https://<tenant>.auth0.com/`.
+- For API calls in production, prefer **access tokens** with your API audience. For quick Postman tests, the ID token also works for `/api/me` (not recommended for real API authorization).
+
+#### Create Application
+1) Auth0 Dashboard -> Applications -> Create Application.
+2) Type: **Regular Web Application**.
+3) Set **Allowed Callback URLs**:
+   - `https://oauth.pstmn.io/v1/callback`
+4) Connections tab: enable **Database (Username/Password)** and **Google** if needed.
+
+#### Create API
+1) Auth0 Dashboard -> APIs -> Create API.
+2) Name: `Rosterapp API`.
+3) Identifier: `<API Identifier>`.
+4) (Optional) Define scopes like `read:hello`.
+
+#### Postman (Authorization Code + PKCE)
+- Grant Type: Authorization Code (With PKCE), Code Challenge Method: S256.
+- Token type: **ID Token** (for quick `/api/me` checks).
+- Auth URL: `https://<YOUR_AUTH0_DOMAIN>/authorize`
+- Access Token URL: `https://<YOUR_AUTH0_DOMAIN>/oauth/token`
+- Client ID/Secret: from the Auth0 application.
+- Callback URL: `https://oauth.pstmn.io/v1/callback`
+- Scope: `openid profile email` (+ your API scope like `read:hello` if defined).
+- If you want an access token for your API, pass `audience=<API Identifier>` in the request; then call `/api/**` with `Authorization: Bearer <access_token>`.
