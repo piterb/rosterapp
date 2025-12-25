@@ -27,3 +27,5 @@ app:
   security:
     # Comma-separated issuer URIs (e.g., https://securetoken.google.com/<project_id>[,https://accounts.google.com])
     allowed-issuers: ${AUTH_ISSUER_URIS:}
+    # Comma-separated allowed CORS origins (e.g., http://localhost:3000,https://app.example.com)
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:}

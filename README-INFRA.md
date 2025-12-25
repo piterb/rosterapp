@@ -87,6 +87,7 @@ Required **Variables**:
 - `SPRING_DATASOURCE_URL` (plain env value)
 - `SPRING_PROFILES_ACTIVE` (optional)
 - `AUTH_ISSUER_URIS` (comma-separated issuers, e.g., `https://securetoken.google.com/<project_id>,https://accounts.google.com`)
+- `CORS_ALLOWED_ORIGINS` (comma-separated origins, e.g., `http://localhost:3000,https://app.example.com`)
 - `IDENTITY_GOOGLE_CLIENT_ID` (OAuth client ID for Google IdP)
 
 Required **Secrets**:
