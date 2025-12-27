@@ -6,6 +6,10 @@ spring:
       ddl-auto: validate
   flyway:
     enabled: true
+  servlet:
+    multipart:
+      max-file-size: ${MULTIPART_MAX_FILE_SIZE:5262144}
+      max-request-size: ${MULTIPART_MAX_REQUEST_SIZE:5262144}
 server:
   port: ${PORT:8080}
 management:

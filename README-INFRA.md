@@ -88,6 +88,8 @@ Required **Variables**:
 - `SPRING_PROFILES_ACTIVE` (optional)
 - `AUTH_ISSUER_URIS` (comma-separated issuers, e.g., `https://securetoken.google.com/<project_id>,https://accounts.google.com`)
 - `CORS_ALLOWED_ORIGINS` (comma-separated origins, e.g., `http://localhost:3000,https://app.example.com`)
+- `MULTIPART_MAX_FILE_SIZE` (max size per uploaded file, e.g., `5242880` for 5 MB)
+- `MULTIPART_MAX_REQUEST_SIZE` (max total request size, e.g., `5242880` for 5 MB)
 - `IDENTITY_GOOGLE_CLIENT_ID` (OAuth client ID for Google IdP)
 
 Required **Secrets**:

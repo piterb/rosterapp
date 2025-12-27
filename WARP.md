@@ -28,6 +28,8 @@ When running locally against a real Postgres instance, the app expects the usual
 - `SPRING_DATASOURCE_PASSWORD` (or a Secret Manager–backed secret in Cloud Run)
 - `AUTH_ISSUER_URIS` (comma-separated JWT issuers; wired into `app.security.allowed-issuers`).
 - `CORS_ALLOWED_ORIGINS` (comma-separated origins; wired into `app.security.allowed-origins`).
+- `MULTIPART_MAX_FILE_SIZE` (max size per uploaded file; wired into `spring.servlet.multipart.max-file-size`).
+- `MULTIPART_MAX_REQUEST_SIZE` (max total request size; wired into `spring.servlet.multipart.max-request-size`).
 
 ### Docker image
 
@@ -43,6 +45,8 @@ The Docker build uses a Gradle builder image and produces a distroless Java 17 i
       -e SPRING_DATASOURCE_PASSWORD=pass \
       -e AUTH_ISSUER_URIS="https://issuer.example.com" \
       -e CORS_ALLOWED_ORIGINS="http://localhost:3000" \
+      -e MULTIPART_MAX_FILE_SIZE=262144 \
+      -e MULTIPART_MAX_REQUEST_SIZE=262144 \
       app:local`
 
 CI builds and pushes an image for Cloud Run using the `Deploy` workflow (`.github/workflows/deploy.yml`); it tags the image as:
