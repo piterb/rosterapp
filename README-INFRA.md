@@ -127,6 +127,21 @@ Required **Secrets**:
    - Authorized redirect URIs (for testing):
      - `https://oauth.pstmn.io/v1/callback` (Postman)
      - `http://localhost:8080/login/oauth2/code/google` (if you ever test local Spring OAuth flow)
+
+## Manual OpenAI regression test
+There is a manual integration test that calls the real OpenAI API and compares the OCR/parse output
+against a golden JSON file in `src/test/resources/fixtures/roster-openai/roster_new.json`. It is
+disabled by default to avoid costs and CI flakiness.
+
+Run it manually:
+
+```bash
+OPENAI_API_KEY=sk-... ./gradlew openaiIT
+```
+
+Notes:
+- Uses `src/test/resources/fixtures/roster-openai/roster.jpg` as input.
+- Fixed model versions: `gpt-4.1-2025-04-14` (OCR) and `gpt-5.1-2025-11-13` (parse).
      - `http://localhost:3000` or another local front/BFF callback if you have one
    - Authorized JavaScript origins: leave empty unless you have an SPA on a specific domain.
 3) Create → copy **Client ID** into `IDENTITY_GOOGLE_CLIENT_ID` (GitHub variable) and **Client Secret** into `IDENTITY_GOOGLE_CLIENT_SECRET` (GitHub Secret).

@@ -54,6 +54,17 @@ tasks.named('test') {
 	}
 }
 
+tasks.register('openaiIT', Test) {
+	description = 'Runs OpenAI integration tests (manual, calls real API).'
+	group = 'verification'
+	testClassesDirs = sourceSets.test.output.classesDirs
+	classpath = sourceSets.test.runtimeClasspath
+	useJUnitPlatform {
+		includeTags 'openai'
+	}
+	systemProperty 'openaiIT', 'true'
+}
+
 tasks.withType(Test).configureEach {
     testLogging {
         events "failed"
