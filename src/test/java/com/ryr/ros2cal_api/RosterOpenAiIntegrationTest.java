@@ -9,6 +9,8 @@ import java.io.InputStream;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ryr.ros2cal_api.roster.RosterConversionService;
+import com.ryr.ros2cal_api.roster.RosterIcsExporter;
+import com.ryr.ros2cal_api.roster.RosterProperties;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,12 @@ class RosterOpenAiIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private RosterIcsExporter rosterIcsExporter;
+
+    @Autowired
+    private RosterProperties rosterProperties;
+
     @DynamicPropertySource
     static void registerOpenAiKey(DynamicPropertyRegistry registry) {
         registry.add("app.openai.api-key", () -> System.getenv("OPENAI_API_KEY"));
@@ -38,11 +46,19 @@ class RosterOpenAiIntegrationTest {
     void rosterImageMatchesGoldenJson() throws Exception {
         assumeTrue(isOpenAiIntegrationEnabled(), "OpenAI integration test is disabled");
 
-        byte[] image = readResource("fixtures/roster-openai/roster.jpg");
-        JsonNode expected = objectMapper.readTree(readResource("fixtures/roster-openai/roster_new.json"));
+        byte[] image = readResource("fixtures/roster-openai/roster_input.jpg");
+        JsonNode expected = objectMapper.readTree(readResource("fixtures/roster-openai/roster_expected.json"));
 
-        JsonNode actual = objectMapper.valueToTree(rosterConversionService.parseRoster(image).getData());
+        var result = rosterConversionService.parseRoster(image);
+        JsonNode actual = objectMapper.valueToTree(result.getData());
         assertEquals(expected, actual);
+
+        String expectedIcs = new String(readResource("fixtures/roster-openai/roster_expected.ics"));
+        String actualIcs = rosterIcsExporter.jsonToIcs(
+                result.getData(),
+                rosterProperties.getCalendarName(),
+                rosterProperties.getLocalTz());
+        assertEquals(normalizeIcs(expectedIcs), normalizeIcs(actualIcs));
     }
 
     private boolean isOpenAiIntegrationEnabled() {
@@ -62,5 +78,32 @@ class RosterOpenAiIntegrationTest {
             }
             return input.readAllBytes();
         }
+    }
+
+    private String normalizeIcs(String value) {
+        if (value == null) {
+            return "";
+        }
+        String normalized = value.replace("\r\n", "\n").replace("\r", "\n");
+        StringBuilder out = new StringBuilder();
+        for (String line : normalized.split("\n")) {
+            String trimmed = rtrim(line);
+            if (trimmed.isBlank()) {
+                continue;
+            }
+            if (trimmed.startsWith("DTSTAMP:")) {
+                continue;
+            }
+            out.append(trimmed).append('\n');
+        }
+        return out.toString().trim();
+    }
+
+    private String rtrim(String value) {
+        int end = value.length();
+        while (end > 0 && Character.isWhitespace(value.charAt(end - 1))) {
+            end--;
+        }
+        return value.substring(0, end);
     }
 }
