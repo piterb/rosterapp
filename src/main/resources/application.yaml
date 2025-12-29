@@ -6,6 +6,10 @@ spring:
       ddl-auto: validate
   flyway:
     enabled: true
+  servlet:
+    multipart:
+      max-file-size: ${MULTIPART_MAX_FILE_SIZE:5262144}
+      max-request-size: ${MULTIPART_MAX_REQUEST_SIZE:5262144}
 server:
   port: ${PORT:8080}
 management:
@@ -24,6 +28,24 @@ management:
       enabled: true
 
 app:
+  openai:
+    api-key: ${OPENAI_API_KEY:}
+    base-url: ${OPENAI_BASE_URL:https://api.openai.com/v1}
+    ocr-model: ${OPENAI_OCR_MODEL:gpt-4.1}
+    parse-model: ${OPENAI_PARSE_MODEL:gpt-5.1}
+    enable-cache: ${OPENAI_ENABLE_CACHE:true}
+    request-timeout: ${OPENAI_REQUEST_TIMEOUT:PT180S}
+  roster:
+    local-tz: ${ROSTER_LOCAL_TZ:Europe/Berlin}
+    calendar-name: ${ROSTER_CALENDAR_NAME:Roster}
   security:
     # Comma-separated issuer URIs (e.g., https://securetoken.google.com/<project_id>[,https://accounts.google.com])
     allowed-issuers: ${AUTH_ISSUER_URIS:}
+    # Comma-separated allowed CORS origins (e.g., http://localhost:3000,https://app.example.com)
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:}
+
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT:INFO}
+    com.ryr.ros2cal_api: ${LOG_LEVEL_APP:INFO}
+    org.springframework.web: ${LOG_LEVEL_SPRING_WEB:INFO}

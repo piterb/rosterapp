@@ -31,6 +31,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
+	implementation 'com.openai:openai-java:4.13.0'
     implementation 'org.flywaydb:flyway-core:11.19.0'
     implementation 'org.flywaydb:flyway-database-postgresql:11.19.0'
 	compileOnly 'org.projectlombok:lombok'
@@ -51,6 +52,17 @@ tasks.named('test') {
 	if (System.getenv("SKIP_TESTS")?.toBoolean() == true) {
 		enabled = false
 	}
+}
+
+tasks.register('openaiIT', Test) {
+	description = 'Runs OpenAI integration tests (manual, calls real API).'
+	group = 'verification'
+	testClassesDirs = sourceSets.test.output.classesDirs
+	classpath = sourceSets.test.runtimeClasspath
+	useJUnitPlatform {
+		includeTags 'openai'
+	}
+	systemProperty 'openaiIT', 'true'
 }
 
 tasks.withType(Test).configureEach {

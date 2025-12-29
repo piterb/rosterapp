@@ -87,6 +87,15 @@ Required **Variables**:
 - `SPRING_DATASOURCE_URL` (plain env value)
 - `SPRING_PROFILES_ACTIVE` (optional)
 - `AUTH_ISSUER_URIS` (comma-separated issuers, e.g., `https://securetoken.google.com/<project_id>,https://accounts.google.com`)
+- `CORS_ALLOWED_ORIGINS` (comma-separated origins, e.g., `http://localhost:3000,https://app.example.com`)
+- `MULTIPART_MAX_FILE_SIZE` (max size per uploaded file, e.g., `5242880` for 5 MB)
+- `MULTIPART_MAX_REQUEST_SIZE` (max total request size, e.g., `5242880` for 5 MB)
+- `OPENAI_API_KEY` (OpenAI key for roster OCR/parse)
+- `OPENAI_BASE_URL` (optional, default `https://api.openai.com/v1`)
+- `OPENAI_OCR_MODEL` (default `gpt-4.1`)
+- `OPENAI_PARSE_MODEL` (default `gpt-5.1`)
+- `ROSTER_LOCAL_TZ` (local timezone for ICS descriptions, default `Europe/Berlin`)
+- `ROSTER_CALENDAR_NAME` (calendar name for ICS PRODID, default `Roster`)
 - `IDENTITY_GOOGLE_CLIENT_ID` (OAuth client ID for Google IdP)
 
 Required **Secrets**:
@@ -118,6 +127,25 @@ Required **Secrets**:
    - Authorized redirect URIs (for testing):
      - `https://oauth.pstmn.io/v1/callback` (Postman)
      - `http://localhost:8080/login/oauth2/code/google` (if you ever test local Spring OAuth flow)
+
+## Manual OpenAI regression test
+There is a manual integration test that calls the real OpenAI API and compares the OCR/parse output
+against a golden JSON file in `src/test/resources/fixtures/roster-openai/roster_expected.json`. It is
+disabled by default to avoid costs and CI flakiness.
+
+Run it manually:
+
+```bash
+./scripts/run-test-openai-int.sh
+```
+
+Notes:
+- Uses `src/test/resources/fixtures/roster-openai/roster_input.jpg` as input.
+- Expected JSON: `src/test/resources/fixtures/roster-openai/roster_expected.json`.
+- Expected ICS: `src/test/resources/fixtures/roster-openai/roster_expected.ics`.
+- Fixed model versions: `gpt-4.1-2025-04-14` (OCR) and `gpt-5.1-2025-11-13` (parse).
+- To bypass OpenAI prompt cache for a fresh run, set `OPENAI_ENABLE_CACHE=false`.
+- The script reads `OPENAI_API_KEY` from `.env` if present.
      - `http://localhost:3000` or another local front/BFF callback if you have one
    - Authorized JavaScript origins: leave empty unless you have an SPA on a specific domain.
 3) Create → copy **Client ID** into `IDENTITY_GOOGLE_CLIENT_ID` (GitHub variable) and **Client Secret** into `IDENTITY_GOOGLE_CLIENT_SECRET` (GitHub Secret).
