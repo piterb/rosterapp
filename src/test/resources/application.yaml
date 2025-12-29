@@ -17,8 +17,9 @@ spring:
     enabled: true
 
 app:
+  openai:
+    api-key: ${OPENAI_API_KEY:dummy}
+    enable-cache: ${OPENAI_ENABLE_CACHE:true}
   security:
     allowed-issuers:
       - https://issuer.example.com
-  openai:
-    enable-cache: ${OPENAI_ENABLE_CACHE:true}
