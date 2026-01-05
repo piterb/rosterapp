@@ -8,20 +8,17 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.springframework.stereotype.Component;
 
 @Component
 public class RosterIcsExporter {
 
-    private static final Map<String, String> COLOR_MAP = Map.of(
-            "FLIGHT", "#4285F4",
-            "DH", "#DB4437",
-            "HSBY", "#F4B400",
-            "A/L", "#0F9D58");
-
     private static final DateTimeFormatter ICS_DATE_TIME = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
     private static final DateTimeFormatter ICS_DATE = DateTimeFormatter.BASIC_ISO_DATE;
+    private static final int MAX_LINE_OCTETS = 75;
+    private static final Pattern UID_WHITESPACE = Pattern.compile("\\s+");
 
     public String jsonToIcs(Map<String, Object> roster, String calendarName, String localTz) {
         List<String> lines = new ArrayList<>();
@@ -43,7 +40,11 @@ public class RosterIcsExporter {
         }
 
         lines.add("END:VCALENDAR");
-        return String.join("\r\n", lines);
+        List<String> folded = new ArrayList<>(lines.size());
+        for (String line : lines) {
+            appendFoldedLines(folded, line);
+        }
+        return String.join("\r\n", folded);
     }
 
     private List<String> eventToIcs(Map<String, Object> event, String calendarName, String localTz) {
@@ -57,7 +58,7 @@ public class RosterIcsExporter {
 
         OffsetDateTime start = parseUtc(startUtc);
         OffsetDateTime end = parseUtc(endUtc);
-        String uid = dutyType + "|" + startUtc + "|" + endUtc;
+        String uid = sanitizeUid(dutyType + "|" + startUtc + "|" + endUtc);
 
         lines.add("BEGIN:VEVENT");
         lines.add("UID:" + uid);
@@ -76,10 +77,6 @@ public class RosterIcsExporter {
 
         lines.add("SUMMARY:" + escapeIcs(dutyType));
         lines.add("DESCRIPTION:" + escapeIcs(buildDescription(event, localTz)));
-        String color = COLOR_MAP.get(dutyType);
-        if (color != null) {
-            lines.add("COLOR:" + color);
-        }
         lines.add("END:VEVENT");
         return lines;
     }
@@ -170,6 +167,37 @@ public class RosterIcsExporter {
         }
         String escaped = text.replace("\\", "\\\\").replace(",", "\\,").replace(";", "\\;");
         return escaped.replace("\n", "\\n");
+    }
+
+    private String sanitizeUid(String uid) {
+        if (uid == null) {
+            return "";
+        }
+        return UID_WHITESPACE.matcher(uid).replaceAll("_");
+    }
+
+    private void appendFoldedLines(List<String> out, String line) {
+        if (line == null) {
+            out.add("");
+            return;
+        }
+        StringBuilder current = new StringBuilder();
+        int currentOctets = 0;
+        for (int i = 0; i < line.length(); ) {
+            int codePoint = line.codePointAt(i);
+            String chunk = new String(Character.toChars(codePoint));
+            int chunkOctets = chunk.getBytes(java.nio.charset.StandardCharsets.UTF_8).length;
+            if (currentOctets + chunkOctets > MAX_LINE_OCTETS) {
+                out.add(current.toString());
+                current.setLength(0);
+                current.append(' ');
+                currentOctets = 1;
+            }
+            current.append(chunk);
+            currentOctets += chunkOctets;
+            i += Character.charCount(codePoint);
+        }
+        out.add(current.toString());
     }
 
     private String stringValue(Object value, String fallback) {
